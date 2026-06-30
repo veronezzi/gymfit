@@ -14,15 +14,18 @@ grupos musculares e passo a passo. Funciona na web (e também roda em Android).
 - Tela de detalhe com GIF animado do movimento
 - Músculo principal e secundários
 - Passo a passo de execução
+- Seletor de idioma das instruções: 🇧🇷 Português (padrão) / 🇺🇸 English
 
 ## 🗂️ Dados
 
 Os dados vêm do dataset público
 [hasaneyldrm/exercises-dataset](https://github.com/hasaneyldrm/exercises-dataset).
 Um recorte enxuto (`assets/data/exercises.json`) é empacotado no app; as imagens e
-GIFs são carregados sob demanda do repositório de origem.
+GIFs são carregados sob demanda do repositório de origem. Como o dataset original
+não traz português, as instruções em PT são geradas por tradução automática
+(EN → PT) no momento de build, com cache em `tool/pt_cache.json`.
 
-Para regenerar o asset a partir do dataset bruto:
+Para regenerar o asset (e traduções) a partir do dataset bruto:
 
 ```bash
 curl -sL https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/data/exercises.json -o tool/exercises_raw.json
