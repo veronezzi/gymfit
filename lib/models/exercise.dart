@@ -5,8 +5,9 @@ class Exercise {
   final String equipment;
   final String target;
   final List<String> secondaryMuscles;
-  final String imagePath;
-  final String gifPath;
+
+  /// Identificador da mídia no CDN do ExerciseDB (ex.: '2gPfomN').
+  final String mediaId;
 
   /// Nome por idioma (ex.: {'pt': '...', 'en': '...'}).
   final Map<String, String> nameByLang;
@@ -20,18 +21,23 @@ class Exercise {
     required this.target,
     required this.equipment,
     required this.secondaryMuscles,
-    required this.imagePath,
-    required this.gifPath,
+    required this.mediaId,
     required this.nameByLang,
     required this.instructionsByLang,
   });
 
-  /// Base do repositório de origem onde estão as imagens e GIFs.
-  static const String _mediaBase =
-      'https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/';
+  // O GIF fica no CDN oficial do ExerciseDB, que não envia cabeçalhos CORS.
+  // Por isso passamos pelo proxy de imagens weserv.nl, que adiciona CORS
+  // (necessário para o Flutter Web/CanvasKit carregar a imagem).
+  String get _cdnGif => 'static.exercisedb.dev/media/$mediaId.gif';
+  String _proxied(String extra) =>
+      'https://images.weserv.nl/?url=${Uri.encodeQueryComponent(_cdnGif)}&$extra';
 
-  String get imageUrl => _mediaBase + imagePath;
-  String get gifUrl => _mediaBase + gifPath;
+  /// Miniatura estática (primeiro quadro do GIF) para os cards.
+  String get imageUrl => mediaId.isEmpty ? '' : _proxied('w=400&output=jpg');
+
+  /// GIF animado para a tela de detalhe.
+  String get gifUrl => mediaId.isEmpty ? '' : _proxied('n=-1&output=gif');
 
   /// Nome no idioma pedido, com fallback para pt e depois en.
   String nameFor(String lang) =>
@@ -73,8 +79,7 @@ class Exercise {
       secondaryMuscles: ((json['secondary_muscles'] as List<dynamic>?) ?? [])
           .map((e) => e.toString())
           .toList(),
-      imagePath: (json['image'] ?? '').toString(),
-      gifPath: (json['gif_url'] ?? '').toString(),
+      mediaId: (json['media_id'] ?? '').toString(),
     );
   }
 }

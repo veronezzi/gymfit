@@ -2,7 +2,18 @@ import 'package:flutter/material.dart';
 import '../data/labels.dart';
 import '../models/exercise.dart';
 import '../state/app_lang.dart';
+import '../state/workout_store.dart';
 import '../widgets/language_selector.dart';
+
+void _snack(BuildContext context, String message) {
+  ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      content: Text(message),
+      duration: const Duration(seconds: 2),
+      behavior: SnackBarBehavior.floating,
+    ));
+}
 
 /// Tela de detalhe com o GIF animado, músculos e passo a passo.
 class DetailScreen extends StatelessWidget {
@@ -72,6 +83,37 @@ class DetailScreen extends StatelessWidget {
                         highlight: true,
                       ),
                     ],
+                  ),
+                  const SizedBox(height: 20),
+                  ListenableBuilder(
+                    listenable: workoutStore,
+                    builder: (context, _) {
+                      final inPlan = workoutStore.isInPlan(exercise.id);
+                      return SizedBox(
+                        width: double.infinity,
+                        child: inPlan
+                            ? OutlinedButton.icon(
+                                onPressed: () {
+                                  workoutStore.removeExercise(exercise.id);
+                                  _snack(context, 'Removido do treino');
+                                },
+                                style: OutlinedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(48)),
+                                icon: const Icon(Icons.check),
+                                label: const Text('No seu treino • remover'),
+                              )
+                            : FilledButton.icon(
+                                onPressed: () {
+                                  workoutStore.addExercise(exercise.id);
+                                  _snack(context, 'Adicionado ao treino 💪');
+                                },
+                                style: FilledButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(48)),
+                                icon: const Icon(Icons.add),
+                                label: const Text('Adicionar ao treino'),
+                              ),
+                      );
+                    },
                   ),
                   if (exercise.secondaryMuscles.isNotEmpty) ...[
                     const SizedBox(height: 28),

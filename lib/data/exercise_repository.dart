@@ -5,9 +5,11 @@ import '../models/exercise.dart';
 /// Carrega e fornece acesso aos exercícios do asset empacotado.
 class ExerciseRepository {
   List<Exercise> _all = const [];
+  final Map<String, Exercise> _byId = {};
   bool _loaded = false;
 
   List<Exercise> get all => _all;
+  bool get isLoaded => _loaded;
 
   Future<void> load() async {
     if (_loaded) return;
@@ -16,8 +18,13 @@ class ExerciseRepository {
     _all = data
         .map((e) => Exercise.fromJson(e as Map<String, dynamic>))
         .toList();
+    _byId
+      ..clear()
+      ..addEntries(_all.map((e) => MapEntry(e.id, e)));
     _loaded = true;
   }
+
+  Exercise? byId(String id) => _byId[id];
 
   /// Lista ordenada de categorias (grupos musculares) presentes.
   List<String> get categories {
@@ -39,3 +46,6 @@ class ExerciseRepository {
     }).toList();
   }
 }
+
+/// Instância global, carregada uma vez em main().
+final exerciseRepo = ExerciseRepository();

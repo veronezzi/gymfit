@@ -49,8 +49,7 @@ Future<void> main() async {
       'equipment': m['equipment'],
       'target': m['target'],
       'secondary_muscles': m['secondary_muscles'] ?? <String>[],
-      'image': m['image'],
-      'gif_url': m['gif_url'],
+      'media_id': _mediaId(m),
       'instructions': {
         'pt': ptInstructions[id] ?? enInstructions[id],
         'en': enInstructions[id],
@@ -109,6 +108,20 @@ Future<Map<String, String>> _translateAll(
   await Future.wait(chunks.map(worker));
   cacheFile.writeAsStringSync(json.encode(cache));
   return cache;
+}
+
+/// Extrai o media_id do registro. Aceita o campo novo `media_id` ou deriva do
+/// caminho antigo de imagem (ex.: "images/0001-2gPfomN.jpg" -> "2gPfomN").
+String _mediaId(Map<String, dynamic> m) {
+  final direct = (m['media_id'] ?? '').toString();
+  if (direct.isNotEmpty && direct != 'null') return direct;
+  final img = (m['image'] ?? '').toString();
+  if (img.isEmpty) return '';
+  final file = img.split('/').last; // 0001-2gPfomN.jpg
+  final base =
+      file.contains('.') ? file.substring(0, file.lastIndexOf('.')) : file;
+  final dash = base.indexOf('-');
+  return dash >= 0 ? base.substring(dash + 1) : base;
 }
 
 /// Traduz [text] de inglês para português via endpoint público do Google.

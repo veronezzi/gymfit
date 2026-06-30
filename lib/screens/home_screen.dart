@@ -15,37 +15,17 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _repo = ExerciseRepository();
-  late Future<void> _loadFuture;
+  final _repo = exerciseRepo;
 
   String _query = '';
   String? _selectedCategory;
 
   @override
-  void initState() {
-    super.initState();
-    _loadFuture = _repo.load();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      body: FutureBuilder<void>(
-        future: _loadFuture,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done) {
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(
-                child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Text('Erro ao carregar exercícios:\n${snapshot.error}',
-                  textAlign: TextAlign.center),
-            ));
-          }
-
+      body: Builder(
+        builder: (context) {
           final results =
               _repo.filter(query: _query, category: _selectedCategory);
 
