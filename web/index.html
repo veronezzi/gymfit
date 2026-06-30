@@ -18,21 +18,42 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="GymFit - catálogo de exercícios com animações, músculos e passo a passo.">
+  <meta name="theme-color" content="#00C853">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="gymfit">
+  <meta name="apple-mobile-web-app-title" content="GymFit">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>gymfit</title>
+  <title>GymFit</title>
   <link rel="manifest" href="manifest.json">
+  <style>
+    body { margin: 0; background-color: #0a0f0c; }
+    #loading {
+      position: fixed; inset: 0; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 18px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      color: #00C853;
+    }
+    #loading .spinner {
+      width: 42px; height: 42px; border: 4px solid rgba(0,200,83,0.25);
+      border-top-color: #00C853; border-radius: 50%;
+      animation: spin 0.9s linear infinite;
+    }
+    #loading .brand { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
 </head>
 <body>
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="brand">GymFit 🏋️</div>
+  </div>
   <!--
     You can customize the "flutter_bootstrap.js" script.
     This is useful to provide a custom configuration to the Flutter loader
@@ -42,5 +63,16 @@
     * https://docs.flutter.dev/platform-integration/web/initialization
   -->
   <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Remove o indicador de carregamento assim que o Flutter renderizar.
+    const _obs = new MutationObserver(() => {
+      if (document.querySelector('flutter-view, flt-glass-pane')) {
+        const el = document.getElementById('loading');
+        if (el) el.remove();
+        _obs.disconnect();
+      }
+    });
+    _obs.observe(document.body, { childList: true, subtree: true });
+  </script>
 </body>
 </html>

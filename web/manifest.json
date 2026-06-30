@@ -1,11 +1,11 @@
 {
-    "name": "gymfit",
-    "short_name": "gymfit",
+    "name": "GymFit",
+    "short_name": "GymFit",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0a0f0c",
+    "theme_color": "#00C853",
+    "description": "Catálogo de exercícios com animações, músculos e passo a passo.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
