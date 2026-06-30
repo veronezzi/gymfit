@@ -15,6 +15,9 @@ grupos musculares e passo a passo. Funciona na web (e também roda em Android).
 - Músculo principal e secundários
 - Passo a passo de execução
 - Seletor de idioma das instruções: 🇧🇷 Português (padrão) / 🇺🇸 English
+- Múltiplos treinos nomeados (Treino A, B, C…) com séries, repetições e descanso
+- Sessão guiada "Começar treino" com timer de descanso entre séries
+- Calendário com histórico dos treinos realizados
 
 ## 🗂️ Dados
 

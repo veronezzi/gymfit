@@ -198,7 +198,8 @@ class _LogCard extends StatelessWidget {
           child: Icon(Icons.fitness_center,
               color: theme.colorScheme.onPrimary, size: 20),
         ),
-        title: Text('Treino • ${log.exerciseIds.length} exercícios',
+        title: Text(
+            '${log.routineName} • ${log.exerciseIds.length} exercícios',
             style: const TextStyle(fontWeight: FontWeight.w600)),
         subtitle: Text('$time • ${(log.durationSeconds / 60).ceil()} min'),
         childrenPadding: const EdgeInsets.fromLTRB(20, 0, 20, 12),

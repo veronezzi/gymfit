@@ -81,7 +81,7 @@ class _MainShellState extends State<MainShell> {
           NavigationDestination(
             icon: Icon(Icons.checklist_outlined),
             selectedIcon: Icon(Icons.checklist),
-            label: 'Meu Treino',
+            label: 'Treinos',
           ),
           NavigationDestination(
             icon: Icon(Icons.calendar_month_outlined),

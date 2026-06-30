@@ -10,7 +10,12 @@ import '../widgets/rest_timer.dart';
 /// contando séries e abrindo o timer de descanso entre elas.
 class WorkoutSessionScreen extends StatefulWidget {
   final List<WorkoutItem> plan;
-  const WorkoutSessionScreen({super.key, required this.plan});
+  final String routineName;
+  const WorkoutSessionScreen({
+    super.key,
+    required this.plan,
+    required this.routineName,
+  });
 
   @override
   State<WorkoutSessionScreen> createState() => _WorkoutSessionScreenState();
@@ -68,6 +73,7 @@ class _WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
     final elapsed = DateTime.now().difference(_startedAt).inSeconds;
     workoutStore.logWorkout(WorkoutLog(
       date: DateTime.now(),
+      routineName: widget.routineName,
       exerciseIds: widget.plan.map((e) => e.exerciseId).toList(),
       durationSeconds: elapsed,
     ));
@@ -127,7 +133,8 @@ class _WorkoutSessionScreenState extends State<WorkoutSessionScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Exercício ${_exerciseIndex + 1} de ${widget.plan.length}'),
+          title: Text('${widget.routineName} • '
+              '${_exerciseIndex + 1}/${widget.plan.length}'),
           bottom: PreferredSize(
             preferredSize: const Size.fromHeight(4),
             child: LinearProgressIndicator(value: progress),

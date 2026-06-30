@@ -3,17 +3,8 @@ import '../data/labels.dart';
 import '../models/exercise.dart';
 import '../state/app_lang.dart';
 import '../state/workout_store.dart';
+import '../widgets/add_to_routine_sheet.dart';
 import '../widgets/language_selector.dart';
-
-void _snack(BuildContext context, String message) {
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(SnackBar(
-      content: Text(message),
-      duration: const Duration(seconds: 2),
-      behavior: SnackBarBehavior.floating,
-    ));
-}
 
 /// Tela de detalhe com o GIF animado, músculos e passo a passo.
 class DetailScreen extends StatelessWidget {
@@ -88,30 +79,23 @@ class DetailScreen extends StatelessWidget {
                   ListenableBuilder(
                     listenable: workoutStore,
                     builder: (context, _) {
-                      final inPlan = workoutStore.isInPlan(exercise.id);
+                      final inRoutines =
+                          workoutStore.routinesContaining(exercise.id);
                       return SizedBox(
                         width: double.infinity,
-                        child: inPlan
-                            ? OutlinedButton.icon(
-                                onPressed: () {
-                                  workoutStore.removeExercise(exercise.id);
-                                  _snack(context, 'Removido do treino');
-                                },
-                                style: OutlinedButton.styleFrom(
-                                    minimumSize: const Size.fromHeight(48)),
-                                icon: const Icon(Icons.check),
-                                label: const Text('No seu treino • remover'),
-                              )
-                            : FilledButton.icon(
-                                onPressed: () {
-                                  workoutStore.addExercise(exercise.id);
-                                  _snack(context, 'Adicionado ao treino 💪');
-                                },
-                                style: FilledButton.styleFrom(
-                                    minimumSize: const Size.fromHeight(48)),
-                                icon: const Icon(Icons.add),
-                                label: const Text('Adicionar ao treino'),
-                              ),
+                        child: FilledButton.icon(
+                          onPressed: () =>
+                              showAddToRoutineSheet(context, exercise.id),
+                          style: FilledButton.styleFrom(
+                              minimumSize: const Size.fromHeight(48)),
+                          icon: Icon(inRoutines.isEmpty
+                              ? Icons.add
+                              : Icons.playlist_add_check),
+                          label: Text(inRoutines.isEmpty
+                              ? 'Adicionar ao treino'
+                              : 'Em ${inRoutines.length} treino'
+                                  '${inRoutines.length == 1 ? '' : 's'} • gerenciar'),
+                        ),
                       );
                     },
                   ),
