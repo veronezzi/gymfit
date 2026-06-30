@@ -3,6 +3,7 @@ import '../data/exercise_repository.dart';
 import '../data/labels.dart';
 import '../models/exercise.dart';
 import '../widgets/exercise_card.dart';
+import '../widgets/language_selector.dart';
 import 'detail_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -55,6 +56,12 @@ class _HomeScreenState extends State<HomeScreen> {
                 expandedHeight: 132,
                 backgroundColor: theme.colorScheme.surface,
                 surfaceTintColor: Colors.transparent,
+                actions: const [
+                  Padding(
+                    padding: EdgeInsets.only(right: 8),
+                    child: Center(child: LanguageSelector()),
+                  ),
+                ],
                 flexibleSpace: FlexibleSpaceBar(
                   titlePadding:
                       const EdgeInsets.only(left: 20, bottom: 70, top: 0),

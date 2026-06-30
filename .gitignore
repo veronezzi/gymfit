@@ -40,3 +40,4 @@ local.properties
 
 # Dataset bruto (regerável via tool/build_data.dart)
 tool/exercises_raw.json
+tool/pt_cache.json

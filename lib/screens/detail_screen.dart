@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../data/labels.dart';
 import '../models/exercise.dart';
+import '../state/app_lang.dart';
+import '../widgets/language_selector.dart';
 
 /// Tela de detalhe com o GIF animado, músculos e passo a passo.
 class DetailScreen extends StatelessWidget {
@@ -10,7 +12,6 @@ class DetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final steps = exercise.steps;
 
     return Scaffold(
       body: CustomScrollView(
@@ -85,19 +86,38 @@ class DetailScreen extends StatelessWidget {
                     ),
                   ],
                   const SizedBox(height: 28),
-                  _SectionTitle('Como executar'),
+                  Row(
+                    children: [
+                      const Expanded(child: _SectionTitle('Como executar')),
+                      const LanguageSelector(),
+                    ],
+                  ),
                   const SizedBox(height: 12),
-                  if (steps.isEmpty)
-                    Text('Sem instruções disponíveis.',
-                        style: theme.textTheme.bodyMedium)
-                  else
-                    ...List.generate(steps.length, (i) => _Step(i + 1, steps[i])),
-                  const SizedBox(height: 24),
-                  Text(
-                    'Instruções no idioma original (inglês).',
-                    style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.outline,
-                        fontStyle: FontStyle.italic),
+                  ValueListenableBuilder<String>(
+                    valueListenable: appLang,
+                    builder: (context, lang, _) {
+                      final steps = exercise.stepsFor(lang);
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (steps.isEmpty)
+                            Text('Sem instruções disponíveis.',
+                                style: theme.textTheme.bodyMedium)
+                          else
+                            ...List.generate(
+                                steps.length, (i) => _Step(i + 1, steps[i])),
+                          const SizedBox(height: 24),
+                          Text(
+                            lang == 'pt'
+                                ? 'Tradução automática do inglês.'
+                                : 'Instructions in the original language.',
+                            style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.colorScheme.outline,
+                                fontStyle: FontStyle.italic),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ],
               ),

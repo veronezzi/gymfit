@@ -8,18 +8,20 @@ class Exercise {
   final List<String> secondaryMuscles;
   final String imagePath;
   final String gifPath;
-  final String instructions;
+
+  /// Instruções por idioma (ex.: {'pt': '...', 'en': '...'}).
+  final Map<String, String> instructionsByLang;
 
   const Exercise({
     required this.id,
     required this.name,
     required this.category,
-    required this.equipment,
     required this.target,
+    required this.equipment,
     required this.secondaryMuscles,
     required this.imagePath,
     required this.gifPath,
-    required this.instructions,
+    required this.instructionsByLang,
   });
 
   /// Base do repositório de origem onde estão as imagens e GIFs.
@@ -29,14 +31,30 @@ class Exercise {
   String get imageUrl => _mediaBase + imagePath;
   String get gifUrl => _mediaBase + gifPath;
 
-  /// Instruções quebradas em passos individuais.
-  List<String> get steps => instructions
+  /// Instruções no idioma pedido, com fallback para pt e depois en.
+  String instructions(String lang) =>
+      instructionsByLang[lang] ??
+      instructionsByLang['pt'] ??
+      instructionsByLang['en'] ??
+      '';
+
+  /// Instruções quebradas em passos individuais para o idioma pedido.
+  List<String> stepsFor(String lang) => instructions(lang)
       .split(RegExp(r'(?<=[.!?])\s+'))
       .map((s) => s.trim())
       .where((s) => s.isNotEmpty)
       .toList();
 
   factory Exercise.fromJson(Map<String, dynamic> json) {
+    final rawInstructions = json['instructions'];
+    final Map<String, String> instr;
+    if (rawInstructions is Map) {
+      instr = rawInstructions
+          .map((k, v) => MapEntry(k.toString(), (v ?? '').toString()));
+    } else {
+      // Compatibilidade com formato antigo (string única em inglês).
+      instr = {'en': (rawInstructions ?? '').toString()};
+    }
     return Exercise(
       id: json['id']?.toString() ?? '',
       name: (json['name'] ?? '').toString(),
@@ -48,7 +66,7 @@ class Exercise {
           .toList(),
       imagePath: (json['image'] ?? '').toString(),
       gifPath: (json['gif_url'] ?? '').toString(),
-      instructions: (json['instructions'] ?? '').toString(),
+      instructionsByLang: instr,
     );
   }
 }
