@@ -1,7 +1,6 @@
 /// Modelo de um exercício carregado do dataset.
 class Exercise {
   final String id;
-  final String name;
   final String category;
   final String equipment;
   final String target;
@@ -9,18 +8,21 @@ class Exercise {
   final String imagePath;
   final String gifPath;
 
+  /// Nome por idioma (ex.: {'pt': '...', 'en': '...'}).
+  final Map<String, String> nameByLang;
+
   /// Instruções por idioma (ex.: {'pt': '...', 'en': '...'}).
   final Map<String, String> instructionsByLang;
 
   const Exercise({
     required this.id,
-    required this.name,
     required this.category,
     required this.target,
     required this.equipment,
     required this.secondaryMuscles,
     required this.imagePath,
     required this.gifPath,
+    required this.nameByLang,
     required this.instructionsByLang,
   });
 
@@ -30,6 +32,13 @@ class Exercise {
 
   String get imageUrl => _mediaBase + imagePath;
   String get gifUrl => _mediaBase + gifPath;
+
+  /// Nome no idioma pedido, com fallback para pt e depois en.
+  String nameFor(String lang) =>
+      nameByLang[lang] ?? nameByLang['pt'] ?? nameByLang['en'] ?? '';
+
+  /// Texto usado na busca (procura em todos os idiomas do nome).
+  String get searchableName => nameByLang.values.join(' ').toLowerCase();
 
   /// Instruções no idioma pedido, com fallback para pt e depois en.
   String instructions(String lang) =>
@@ -45,19 +54,19 @@ class Exercise {
       .where((s) => s.isNotEmpty)
       .toList();
 
-  factory Exercise.fromJson(Map<String, dynamic> json) {
-    final rawInstructions = json['instructions'];
-    final Map<String, String> instr;
-    if (rawInstructions is Map) {
-      instr = rawInstructions
-          .map((k, v) => MapEntry(k.toString(), (v ?? '').toString()));
-    } else {
-      // Compatibilidade com formato antigo (string única em inglês).
-      instr = {'en': (rawInstructions ?? '').toString()};
+  static Map<String, String> _asLangMap(dynamic raw) {
+    if (raw is Map) {
+      return raw.map((k, v) => MapEntry(k.toString(), (v ?? '').toString()));
     }
+    // Compatibilidade com formato antigo (string única em inglês).
+    return {'en': (raw ?? '').toString()};
+  }
+
+  factory Exercise.fromJson(Map<String, dynamic> json) {
     return Exercise(
       id: json['id']?.toString() ?? '',
-      name: (json['name'] ?? '').toString(),
+      nameByLang: _asLangMap(json['name']),
+      instructionsByLang: _asLangMap(json['instructions']),
       category: (json['category'] ?? '').toString(),
       equipment: (json['equipment'] ?? '').toString(),
       target: (json['target'] ?? '').toString(),
@@ -66,7 +75,6 @@ class Exercise {
           .toList(),
       imagePath: (json['image'] ?? '').toString(),
       gifPath: (json['gif_url'] ?? '').toString(),
-      instructionsByLang: instr,
     );
   }
 }

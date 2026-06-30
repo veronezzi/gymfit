@@ -45,10 +45,13 @@ class DetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    _titleCase(exercise.name),
-                    style: theme.textTheme.headlineSmall
-                        ?.copyWith(fontWeight: FontWeight.bold),
+                  ValueListenableBuilder<String>(
+                    valueListenable: appLang,
+                    builder: (context, lang, _) => Text(
+                      sentenceCase(exercise.nameFor(lang)),
+                      style: theme.textTheme.headlineSmall
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   const SizedBox(height: 16),
                   Wrap(
@@ -219,8 +222,3 @@ class _Step extends StatelessWidget {
     );
   }
 }
-
-String _titleCase(String s) => s
-    .split(' ')
-    .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
-    .join(' ');

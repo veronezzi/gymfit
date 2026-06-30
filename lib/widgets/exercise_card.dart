@@ -5,9 +5,15 @@ import '../models/exercise.dart';
 /// Card de um exercício mostrado na grade da home.
 class ExerciseCard extends StatelessWidget {
   final Exercise exercise;
+  final String lang;
   final VoidCallback onTap;
 
-  const ExerciseCard({super.key, required this.exercise, required this.onTap});
+  const ExerciseCard({
+    super.key,
+    required this.exercise,
+    required this.lang,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +56,7 @@ class ExerciseCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _titleCase(exercise.name),
+                    sentenceCase(exercise.nameFor(lang)),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: theme.textTheme.titleSmall
@@ -82,8 +88,3 @@ class ExerciseCard extends StatelessWidget {
     );
   }
 }
-
-String _titleCase(String s) => s
-    .split(' ')
-    .map((w) => w.isEmpty ? w : w[0].toUpperCase() + w.substring(1))
-    .join(' ');

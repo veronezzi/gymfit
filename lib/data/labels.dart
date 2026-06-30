@@ -69,6 +69,9 @@ const Map<String, String> equipmentLabelsPt = {
 String _capitalize(String s) =>
     s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
 
+/// Capitaliza apenas a primeira letra (sentence case) — adequado a PT e EN.
+String sentenceCase(String s) => _capitalize(s);
+
 String categoryPt(String key) => categoryLabelsPt[key] ?? _capitalize(key);
 String targetPt(String key) => targetLabelsPt[key] ?? _capitalize(key);
 String equipmentPt(String key) => equipmentLabelsPt[key] ?? _capitalize(key);

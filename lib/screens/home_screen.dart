@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../data/exercise_repository.dart';
 import '../data/labels.dart';
 import '../models/exercise.dart';
+import '../state/app_lang.dart';
 import '../widgets/exercise_card.dart';
 import '../widgets/language_selector.dart';
 import 'detail_screen.dart';
@@ -48,7 +49,9 @@ class _HomeScreenState extends State<HomeScreen> {
           final results =
               _repo.filter(query: _query, category: _selectedCategory);
 
-          return CustomScrollView(
+          return ValueListenableBuilder<String>(
+            valueListenable: appLang,
+            builder: (context, lang, _) => CustomScrollView(
             slivers: [
               SliverAppBar(
                 pinned: true,
@@ -120,6 +123,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     delegate: SliverChildBuilderDelegate(
                       (context, i) => ExerciseCard(
                         exercise: results[i],
+                        lang: lang,
                         onTap: () => _openDetail(results[i]),
                       ),
                       childCount: results.length,
@@ -127,6 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
             ],
+          ),
           );
         },
       ),

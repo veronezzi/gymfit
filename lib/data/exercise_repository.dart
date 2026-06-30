@@ -33,7 +33,7 @@ class ExerciseRepository {
       final matchesCategory = category == null || e.category == category;
       if (!matchesCategory) return false;
       if (q.isEmpty) return true;
-      return e.name.toLowerCase().contains(q) ||
+      return e.searchableName.contains(q) ||
           e.target.toLowerCase().contains(q) ||
           e.equipment.toLowerCase().contains(q);
     }).toList();
